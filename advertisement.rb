@@ -26,12 +26,12 @@ class Advertisement
     @model = page.css('a[@class="breadcrumb-link"]')[2].children.last.text.strip
     @price = page.css('span[@class="card-price-main-secondary"]').text.strip
     @year = page.at('div[@class="card-info"] ul li dt:contains("Год выпуска")').parent.at('dd').text
-    @odometer = page.at('div[@class="card-info"] ul li dt:contains("Пробег")').parent.at('dd').text.slice!(/\d+/)
-    @fuel_type = page.at('div[@class="card-info"] ul li dt:contains("Тип топлива")').parent.at('dd').text
-    @engine_type = page.at('div[@class="card-info"] ul li dt:contains("Объем")').parent.at('dd').text.slice!(/\d+/)
-    @color = page.at('div[@class="card-info"] ul li dt:contains("Цвет")').parent.at('dd').text
-    @body = page.at('div[@class="card-info"] ul li dt:contains("Тип кузова")').parent.at('dd').text
-    @transmission = page.at('div[@class="card-info"] ul li dt:contains("Трансмиссия")').parent.at('dd').text
+    @odometer = page.at('div[@class="card-info"] ul li dt:contains("Пробег")')&.parent&.at('dd')&.text&.slice!(/\d+/)
+    @fuel_type = page.at('div[@class="card-info"] ul li dt:contains("Тип топлива")')&.parent&.at('dd')&.text
+    @engine_type = page.at('div[@class="card-info"] ul li dt:contains("Объем")')&.parent&.at('dd')&.text&.slice!(/\d+/)
+    @color = page.at('div[@class="card-info"] ul li dt:contains("Цвет")')&.parent&.at('dd')&.text
+    @body = page.at('div[@class="card-info"] ul li dt:contains("Тип кузова")')&.parent&.at('dd')&.text
+    @transmission = page.at('div[@class="card-info"] ul li dt:contains("Трансмиссия")')&.parent&.at('dd')&.text
     @drive = page.at('div[@class="card-info"] ul li dt:contains("Привод")')&.parent&.at('dd')&.text
   end
 end
