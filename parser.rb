@@ -66,4 +66,4 @@ advertisements = Parser.get_advertisements('out.csv')
 # Parser.export_to_csv(advertisements, 'out.csv')
 end_time = Time.now
 puts end_time
-puts(convert_time(start_time, end_time))
+puts(Parser.convert_time(start_time, end_time))
