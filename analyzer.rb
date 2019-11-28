@@ -1,6 +1,8 @@
 require_relative 'parsed_advertisement'
 require 'csv'
 require 'pry'
+require 'prawn'
+require 'squid'
 
 class Analyzer
   def self.import_from_csv(file)
@@ -45,19 +47,32 @@ class Analyzer
 end
 
 parsed_advertisements = Analyzer.import_from_csv('out.csv')
-puts "Most High odometer: #{Analyzer.most_high_odometer(parsed_advertisements).odometer} km \n\n"
-puts "Average odometer: #{Analyzer.average_odometer(parsed_advertisements).to_i} km \n\n"
-p "Production year distribution: #{Analyzer.distribution(parsed_advertisements, 'year')}"
-puts "\n\n"
-p "Transmissions distribution: #{Analyzer.distribution(parsed_advertisements, 'transmission')}"
-puts "\n\n"
-p "Body distribution: #{Analyzer.distribution(parsed_advertisements, 'body')}"
-puts "\n\n"
-p "Color distribution: #{Analyzer.distribution(parsed_advertisements, 'color')}"
-puts "\n\n"
-p "Drive distribution: #{Analyzer.distribution(parsed_advertisements, 'drive')}"
-puts "\n\n"
-p "Fuel type distribution: #{Analyzer.distribution(parsed_advertisements, 'fuel_type')}"
-puts "\n\n"
-p "Make distribution: #{Analyzer.distribution(parsed_advertisements, 'make')}"
-puts "\n\n"
+
+transmissions_data = { "Transmissions distribution": Analyzer.distribution(parsed_advertisements, 'transmission') }
+body_data = { "Body distribution": Analyzer.distribution(parsed_advertisements, 'body') }
+color_data = { "Color distribution": Analyzer.distribution(parsed_advertisements, 'color') }
+drive_data = { "Drive distribution": Analyzer.distribution(parsed_advertisements, 'drive') }
+fuel_data = { "Fuel type distribution": Analyzer.distribution(parsed_advertisements, 'fuel_type')}
+# make_data = { "Make distribution": Analyzer.distribution(parsed_advertisements, 'make') }
+# years_data = { "Production year distribution": Analyzer.distribution(parsed_advertisements, 'year') }
+
+Prawn::Document.generate('analyze.pdf') do
+  font_families.update(
+    'Roboto' => { bold: 'Roboto-Bold.ttf',
+                  italic: 'Roboto-Italic.ttf',
+                  bold_italic: 'Roboto-BoldItalic.ttf',
+                  normal: 'Roboto-Medium.ttf' })
+  text "Most High odometer: #{Analyzer.most_high_odometer(parsed_advertisements).odometer} km \n\n"
+  text "Average odometer: #{Analyzer.average_odometer(parsed_advertisements).to_i} km \n\n"
+  font('Roboto') do
+    chart transmissions_data, labels: [true], steps: 10
+    move_down 50
+    chart fuel_data, labels: [true], steps: 10
+    start_new_page
+    chart color_data, labels: [true], steps: 15
+    move_down 50
+    chart drive_data, labels: [true], steps: 10
+    start_new_page
+    chart body_data, labels: [true, true], steps: 10, every: 2
+  end
+end
